@@ -9,19 +9,20 @@ on:
 jobs:
   sozo-test:
     runs-on: ubuntu-latest
+    env:
+      DOJO_VERSION: v1.1.2
     steps:
       - uses: actions/checkout@v3
-
+      - uses: software-mansion/setup-scarb@v1
+        with:
+          scarb-version: "2.9.2"
       - name: Download Dojo release artifact
         run: |
-          curl -L -o dojo-linux-x86_64.tar.gz https://github.com/dojoengine/dojo/releases/download/v1.1.2/dojo_v1.1.2_linux_amd64.tar.gz
-          tar -xzf dojo-linux-x86_64.tar.gz
-          sudo mv sozo /usr/local/bin/
-
+          curl -L https://install.dojoengine.org | bash
+          /home/runner/.config/.dojo/bin/dojoup -v ${{ env.DOJO_VERSION }}
       - name: Run Dojo Build
         run: |
           cd contracts && sozo build
-
       - name: Run Dojo Test
         run: |
           cd contracts && sozo test
