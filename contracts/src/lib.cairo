@@ -2,9 +2,9 @@ pub mod constants;
 pub mod store;
 
 pub mod models {
+    pub mod game;
     pub mod index;
     pub mod player;
-    pub mod game;
     pub mod tile;
 }
 

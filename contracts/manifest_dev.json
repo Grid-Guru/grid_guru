@@ -1252,8 +1252,8 @@
   },
   "contracts": [
     {
-      "address": "0x46bb284ae028c999ad159659f129e8a8d9fe110466269e803c2c4f268c65591",
-      "class_hash": "0x190083027c119db83aca83d14c3a3d23213bf1265aeeb794f399171a9eefd04",
+      "address": "0x681148eb465421c702b06cfe8d0c357ecffc884cc6bf440000d7a0afc3da3f3",
+      "class_hash": "0x39365ea7c5915576be9e8fbc982801da75534483b93c3775ea959439a61fded",
       "abi": [
         {
           "type": "impl",
@@ -1495,7 +1495,7 @@
   "models": [
     {
       "members": [],
-      "class_hash": "0x6dec180c0d84b8f61251a02a77da2094e88ff40f909bb6078c807425b8a4b30",
+      "class_hash": "0x127247be2e9a573a601f816808dbc7208d31a79c04e77ee3984eb85921576b9",
       "tag": "grid_guru-Game",
       "selector": "0x417804f259f3de4f0a2396c529df4812ddef14520594f074b5b95cf0e28c48d"
     },

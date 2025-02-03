@@ -1,5 +1,5 @@
-use starknet::ContractAddress;
 pub use grid_guru::models::index::{Game, GameStatus};
+use starknet::ContractAddress;
 
 pub mod errors {
     pub const GAME_NOT_IN_PROGRESS: felt252 = 'Game: not in progress';
@@ -22,6 +22,7 @@ pub impl GameImpl of GameTrait {
             player_two: core::num::traits::Zero::<ContractAddress>::zero(),
             current_player: player_one,
             move_count: 0,
+            winner: core::num::traits::Zero::<ContractAddress>::zero(),
             status: GameStatus::Pending,
         }
     }

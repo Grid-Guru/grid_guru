@@ -2,24 +2,21 @@ mod setup {
     // Core imports
     use core::debug::PrintTrait;
 
-    // Starknet imports
-    use starknet::ContractAddress;
-    use starknet::testing::{set_contract_address, set_caller_address};
-
     // Dojo imports
-    use dojo::model::{ModelStorage, ModelValueStorage, ModelStorageTest};
+    use dojo::model::{ModelStorage, ModelStorageTest, ModelValueStorage};
     use dojo::world::{WorldStorage, WorldStorageTrait};
     use dojo_cairo_test::{
-        spawn_test_world, NamespaceDef, ContractDef, TestResource, ContractDefTrait,
-        WorldStorageTestTrait,
+        ContractDef, ContractDefTrait, NamespaceDef, TestResource, WorldStorageTestTrait, spawn_test_world,
     };
+    use grid_guru::constants::DEFAULT_NS;
 
     // Internal imports
     use grid_guru::models::{index as models};
-    use grid_guru::systems::actions::{
-        actions, IActions, IActionsDispatcher, IActionsDispatcherTrait,
-    };
-    use grid_guru::constants::DEFAULT_NS;
+    use grid_guru::systems::actions::{IActions, IActionsDispatcher, IActionsDispatcherTrait, actions};
+
+    // Starknet imports
+    use starknet::ContractAddress;
+    use starknet::testing::{set_caller_address, set_contract_address};
 
     #[starknet::interface]
     trait IDojoInit<ContractState> {}

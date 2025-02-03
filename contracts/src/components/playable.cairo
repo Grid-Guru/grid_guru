@@ -3,18 +3,20 @@ pub mod PlayableComponent {
     // Dojo imports
     use dojo::world::WorldStorage;
     use dojo::world::{IWorldDispatcherTrait};
+    use grid_guru::models::game::{Game, GameTrait, GameStatus};
+    use grid_guru::models::player::{Player, PlayerTrait};
+    use grid_guru::models::tile::{Tile, TileAssert, TileTrait};
+
+    // Internal imports
+    use grid_guru::store::{Store, StoreTrait};
 
     // Starknet imports
     use starknet::{get_caller_address};
 
-    // Internal imports
-    use grid_guru::store::{Store, StoreTrait};
-    use grid_guru::models::player::{Player, PlayerTrait};
-    use grid_guru::models::game::{Game, GameTrait};
-    use grid_guru::models::tile::{Tile, TileTrait, TileAssert};
-
     // Errors
-    pub mod errors {}
+    pub mod errors {
+        pub const GAME_NOT_IN_PROGRESS: felt252 = 'Game: not in progress';
+    }
 
     // Storage
     #[storage]
@@ -63,12 +65,19 @@ pub mod PlayableComponent {
 
             let mut game: Game = store.get_game(game_id);
             let player: Player = store.get_player(game_id, get_caller_address());
+            assert(game.status == GameStatus::InProgress, errors::GAME_NOT_IN_PROGRESS);
 
             TileAssert::assert_is_valid_move(world, game_id, x, y, player.address);
             let mut tile: Tile = TileTrait::new(game_id, x, y, player.address);
             game.move_count += 1;
 
             game.handle_player_switch();
+
+            let is_game_over = TileTrait::is_game_over(world, game_id);
+            if is_game_over {
+                game.status = GameStatus::Completed;
+                game.winner = TileTrait::get_winner(world, game_id);
+            }
 
             store.set_game(game);
             store.set_tile(tile);

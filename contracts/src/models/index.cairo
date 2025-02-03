@@ -18,6 +18,7 @@ pub struct Game {
     pub player_one: ContractAddress,
     pub player_two: ContractAddress,
     pub current_player: ContractAddress,
+    pub winner: ContractAddress,
     pub move_count: u8,
     pub status: GameStatus,
 }

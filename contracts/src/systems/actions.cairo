@@ -8,12 +8,11 @@ trait IActions<TState> {
 
 #[dojo::contract]
 pub mod actions {
-    use super::{IActions};
+    use dojo::world::WorldStorage;
 
     use grid_guru::components::playable::PlayableComponent;
     use grid_guru::constants::DEFAULT_NS;
-
-    use dojo::world::WorldStorage;
+    use super::{IActions};
 
     component!(path: PlayableComponent, storage: playable, event: PlayableEvent);
     impl PlayableInternalImpl = PlayableComponent::InternalImpl<ContractState>;

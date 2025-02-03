@@ -1,9 +1,8 @@
-use starknet::ContractAddress;
-pub use grid_guru::models::index::Tile;
-
 use dojo::world::WorldStorage;
-use grid_guru::store::{Store, StoreTrait};
 use grid_guru::models::game::Game;
+pub use grid_guru::models::index::Tile;
+use grid_guru::store::{Store, StoreTrait};
+use starknet::ContractAddress;
 
 pub mod errors {
     pub const TILE_ALREADY_CLAIMED: felt252 = 'Tile already claimed';
@@ -18,10 +17,34 @@ pub impl TileImpl of TileTrait {
     fn new(game_id: u128, x: u8, y: u8, owner: ContractAddress) -> Tile {
         Tile { game_id, x, y, owner }
     }
-}
 
-#[generate_trait]
-pub impl TileUtils of TileUtilsTrait {
+    #[inline]
+    fn is_game_over(world: WorldStorage, game_id: u128) -> bool {
+        let store: Store = StoreTrait::new(world);
+        let mut total_claimed = 0;
+
+        let mut x = 0;
+        loop {
+            if x >= 8 {
+                break;
+            }
+            let mut y = 0;
+            loop {
+                if y >= 8 {
+                    break;
+                }
+                let tile = store.get_tile(game_id, x, y);
+                if tile.owner != core::num::traits::Zero::<ContractAddress>::zero() {
+                    total_claimed += 1;
+                }
+                y += 1;
+            };
+            x += 1;
+        };
+
+        total_claimed == 64
+    }
+
     #[inline]
     fn get_adjacent_positions(ref self: Tile, x: u8, y: u8) -> Array<(u8, u8)> {
         let mut positions = ArrayTrait::new();
@@ -43,6 +66,41 @@ pub impl TileUtils of TileUtilsTrait {
         }
 
         positions
+    }
+
+    #[inline]
+    fn get_winner(world: WorldStorage, game_id: u128) -> ContractAddress {
+        let store: Store = StoreTrait::new(world);
+        let mut player_one_count: u8 = 0;
+        let mut player_two_count: u8 = 0;
+        let game = store.get_game(game_id);
+
+        let mut x = 0;
+        loop {
+            if x >= 8 {
+                break;
+            }
+            let mut y = 0;
+            loop {
+                if y >= 8 {
+                    break;
+                }
+                let tile = store.get_tile(game_id, x, y);
+                if tile.owner == game.player_one {
+                    player_one_count += 1;
+                } else if tile.owner == game.player_two {
+                    player_two_count += 1;
+                }
+                y += 1;
+            };
+            x += 1;
+        };
+
+        if player_one_count > player_two_count {
+            game.player_one
+        } else {
+            game.player_two
+        }
     }
 }
 

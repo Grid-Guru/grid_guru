@@ -1,12 +1,12 @@
 //! Store struct and component management methods.
-use dojo::world::WorldStorage;
 use dojo::model::ModelStorage;
-use starknet::ContractAddress;
+use dojo::world::WorldStorage;
+use grid_guru::models::game::Game;
 
 // Models imports
 use grid_guru::models::player::Player;
-use grid_guru::models::game::Game;
 use grid_guru::models::tile::Tile;
+use starknet::ContractAddress;
 
 // Structs
 #[derive(Copy, Drop)]

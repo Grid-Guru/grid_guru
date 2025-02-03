@@ -1,6 +1,5 @@
-use starknet::ContractAddress;
-
 pub use grid_guru::models::index::Player;
+use starknet::ContractAddress;
 
 pub mod errors {}
 
