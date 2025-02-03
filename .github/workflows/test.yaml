@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - "main"
+  pull_request:
+
+jobs:
+  sozo-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Download Dojo release artifact
+        run: |
+          curl -L -o dojo-linux-x86_64.tar.gz https://github.com/dojoengine/dojo/releases/download/v1.1.2/dojo_v1.1.2_linux_amd64.tar.gz
+          tar -xzf dojo-linux-x86_64.tar.gz
+          sudo mv sozo /usr/local/bin/
+
+      - name: Run Dojo Build
+        run: |
+          cd contracts && sozo build
+
+      - name: Run Dojo Test
+        run: |
+          cd contracts && sozo test

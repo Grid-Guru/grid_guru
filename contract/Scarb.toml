@@ -1,0 +1,29 @@
+[package]
+cairo-version = "=2.9.2"
+name = "grid_guru"
+version = "0.0.1"
+edition = "2024_07"
+
+[[target.starknet-contract]]
+sierra = true
+casm = true
+build-external-contracts = ["dojo::world::world_contract::world"]
+
+[cairo]
+sierra-replace-ids = true
+
+[dependencies]
+dojo = { git = "https://github.com/dojoengine/dojo", tag = "v1.1.2" }
+starknet = "2.9.2"
+
+[dev-dependencies]
+cairo_test = "2.9.2"
+dojo_cairo_test = { git = "https://github.com/dojoengine/dojo", tag = "v1.1.2" }
+
+[tool.fmt]
+sort-module-level-items = true
+max-line-length = 120
+
+[profile.sepolia]
+[profile.slot]
+[profile.release]
