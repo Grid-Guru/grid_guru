@@ -11,7 +11,7 @@ pub mod PlayableComponent {
     use grid_guru::store::{Store, StoreTrait};
     use grid_guru::models::player::{Player, PlayerTrait};
     use grid_guru::models::game::{Game, GameTrait};
-    //use grid_guru::models::tile::{Tile, TileTrait};
+    use grid_guru::models::tile::{Tile, TileTrait, TileAssert};
 
     // Errors
     pub mod errors {}
@@ -33,9 +33,41 @@ pub mod PlayableComponent {
 
             let mut player: Player = PlayerTrait::new(game_id, get_caller_address());
             let mut game: Game = GameTrait::new(game_id, player.address);
+            let mut tile: Tile = TileTrait::new(game_id, 0, 0, player.address);
 
             store.set_player(player);
             store.set_game(game);
+            store.set_tile(tile);
+        }
+
+        fn join_game(ref self: ComponentState<TState>, world: WorldStorage, game_id: u128) {
+            let mut store: Store = StoreTrait::new(world);
+
+            let mut player: Player = PlayerTrait::new(game_id, get_caller_address());
+            let mut game: Game = store.get_game(game_id);
+            game.join(player.address);
+            let mut tile: Tile = TileTrait::new(game_id, 7, 7, player.address);
+
+            store.set_game(game);
+            store.set_player(player);
+            store.set_tile(tile);
+        }
+
+        fn claim_tile(
+            ref self: ComponentState<TState>, world: WorldStorage, game_id: u128, x: u8, y: u8,
+        ) {
+            let mut store: Store = StoreTrait::new(world);
+
+            let mut game: Game = store.get_game(game_id);
+            let player: Player = store.get_player(game_id, get_caller_address());
+
+            TileAssert::assert_is_valid_move(world, game_id, x, y, player.address);
+            let mut tile: Tile = TileTrait::new(game_id, x, y, player.address);
+
+            game.handle_player_switch();
+
+            store.set_game(game);
+            store.set_tile(tile);
         }
     }
 }

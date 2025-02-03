@@ -4,7 +4,7 @@ pub use grid_guru::models::index::{Game, GameStatus};
 pub mod errors {
     pub const GAME_NOT_IN_PROGRESS: felt252 = 'Game: not in progress';
     pub const GAME_NOT_PENDING: felt252 = 'Game: not pending';
-    pub const PLAYER_ALREADY_JOINED: felt252 = 'Game: Cannot play self';
+    pub const CANNOT_PLAY_SELF: felt252 = 'Game: Cannot play self';
     pub const INVALID_PLAYER_ADDRESS: felt252 = 'Game: invalid player address';
 }
 
@@ -21,19 +21,21 @@ pub impl GameImpl of GameTrait {
             player_one,
             player_two: core::num::traits::Zero::<ContractAddress>::zero(),
             current_player: player_one,
+            move_count: 0,
             status: GameStatus::Pending,
         }
     }
 
     #[inline]
-    fn join(ref self: Game, player: ContractAddress) -> Game {
+    fn join(ref self: Game, player: ContractAddress) {
         assert(self.status == GameStatus::Pending, errors::GAME_NOT_PENDING);
-        assert(player != self.player_one, errors::PLAYER_ALREADY_JOINED);
+        assert(player != self.player_one, errors::CANNOT_PLAY_SELF);
         assert(
             player != core::num::traits::Zero::<ContractAddress>::zero(),
             errors::INVALID_PLAYER_ADDRESS,
         );
-        Game { player_two: player, ..self }
+        self.player_two = player;
+        self.status = GameStatus::InProgress;
     }
 
     #[inline]

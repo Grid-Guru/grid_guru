@@ -1,9 +1,16 @@
 use starknet::ContractAddress;
 pub use grid_guru::models::index::Tile;
-//use dojo::world::WorldStorage;
-//use grid_guru::store::{Store, StoreTrait};
 
-pub mod errors {}
+use dojo::world::WorldStorage;
+use grid_guru::store::{Store, StoreTrait};
+use grid_guru::models::game::Game;
+
+pub mod errors {
+    pub const TILE_ALREADY_CLAIMED: felt252 = 'Tile already claimed';
+    pub const OUT_OF_BOUNDS: felt252 = 'Out of bounds';
+    pub const NO_ADJACENT_TILE: felt252 = 'No adjacent tile owned';
+    pub const NOT_PLAYER_TURN: felt252 = 'Not player turn';
+}
 
 #[generate_trait]
 pub impl TileImpl of TileTrait {
@@ -11,76 +18,10 @@ pub impl TileImpl of TileTrait {
     fn new(game_id: u128, x: u8, y: u8, owner: ContractAddress) -> Tile {
         Tile { game_id, x, y, owner }
     }
+}
 
-    #[inline]
-    fn claim(ref self: Tile, player: ContractAddress) {
-        self.owner = player;
-    }
-
-    #[inline]
-    fn is_valid_move(
-        ref self: Tile, ref tiles: Array<Tile>, x: u8, y: u8, player: ContractAddress,
-    ) -> bool {
-        let tiles_snapshot = @tiles;
-
-        if x >= 8 || y >= 8 {
-            return false;
-        }
-
-        if self.is_tile_occupied(tiles_snapshot, x, y) {
-            return false;
-        }
-
-        self.has_adjacent_tile(tiles_snapshot, x, y, player)
-    }
-
-    #[inline]
-    fn is_tile_occupied(ref self: Tile, tiles: @Array<Tile>, x: u8, y: u8) -> bool {
-        let mut i = 0;
-        loop {
-            if i >= tiles.len() {
-                break false;
-            }
-            let tile = *tiles[i];
-            if tile.x == x && tile.y == y {
-                break true;
-            }
-            i += 1;
-        }
-    }
-
-    #[inline]
-    fn has_adjacent_tile(
-        ref self: Tile, tiles: @Array<Tile>, x: u8, y: u8, player: ContractAddress,
-    ) -> bool {
-        let adjacents = self.get_adjacent_positions(x, y);
-
-        let mut i = 0;
-        loop {
-            if i >= tiles.len() {
-                break false;
-            }
-            let tile = *tiles[i];
-            if tile.owner == player {
-                let mut j = 0;
-                let is_adjacent = loop {
-                    if j >= adjacents.len() {
-                        break false;
-                    }
-                    let (adj_x, adj_y) = *adjacents[j];
-                    if tile.x == adj_x && tile.y == adj_y {
-                        break true;
-                    }
-                    j += 1;
-                };
-                if is_adjacent {
-                    break true;
-                }
-            }
-            i += 1;
-        }
-    }
-
+#[generate_trait]
+pub impl TileUtils of TileUtilsTrait {
     #[inline]
     fn get_adjacent_positions(ref self: Tile, x: u8, y: u8) -> Array<(u8, u8)> {
         let mut positions = ArrayTrait::new();
@@ -106,7 +47,43 @@ pub impl TileImpl of TileTrait {
 }
 
 #[generate_trait]
-pub impl TileUtils of TileUtilsTrait {}
+pub impl TileAssert of AssertTrait {
+    #[inline]
+    fn assert_is_valid_move(
+        world: WorldStorage, game_id: u128, x: u8, y: u8, player: ContractAddress,
+    ) {
+        let store: Store = StoreTrait::new(world);
+        let mut tile: Tile = store.get_tile(game_id, x, y);
+        let game: Game = store.get_game(game_id);
 
-#[generate_trait]
-impl TileAssert of AssertTrait {}
+        assert(
+            tile.owner == core::num::traits::Zero::<ContractAddress>::zero(),
+            errors::TILE_ALREADY_CLAIMED,
+        );
+        assert(x < 8 && y < 8, errors::OUT_OF_BOUNDS);
+        assert(player == game.current_player, errors::NOT_PLAYER_TURN);
+
+        if game.move_count <= 1 {
+            return ();
+        }
+
+        let mut adjacents = tile.get_adjacent_positions(x, y);
+
+        let mut has_adjacent = false;
+        let mut i = 0;
+        loop {
+            if i >= adjacents.len() {
+                break;
+            }
+            let (adj_x, adj_y) = *adjacents[i];
+            let adjacent_tile = store.get_tile(game_id, adj_x, adj_y);
+            if adjacent_tile.owner == player {
+                has_adjacent = true;
+                break;
+            }
+            i += 1;
+        };
+
+        assert(has_adjacent, errors::NO_ADJACENT_TILE);
+    }
+}

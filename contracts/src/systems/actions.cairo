@@ -2,9 +2,10 @@
 #[starknet::interface]
 trait IActions<TState> {
     fn create_game(ref self: TState);
+    fn join_game(ref self: TState, game_id: u128);
+    fn claim_tile(ref self: TState, game_id: u128, x: u8, y: u8);
 }
 
-// dojo decorator
 #[dojo::contract]
 pub mod actions {
     use super::{IActions};
@@ -38,12 +39,20 @@ pub mod actions {
             let world = self.world_storage();
             self.playable.create_game(world);
         }
+
+        fn join_game(ref self: ContractState, game_id: u128) {
+            let world = self.world_storage();
+            self.playable.join_game(world, game_id);
+        }
+
+        fn claim_tile(ref self: ContractState, game_id: u128, x: u8, y: u8) {
+            let world = self.world_storage();
+            self.playable.claim_tile(world, game_id, x, y);
+        }
     }
 
     #[generate_trait]
     impl Private of PrivateTrait {
-        /// Use the default namespace "dojo_starter". This function is handy since the ByteArray
-        /// can't be const.
         fn world_storage(self: @ContractState) -> WorldStorage {
             self.world(@DEFAULT_NS())
         }

@@ -1252,8 +1252,8 @@
   },
   "contracts": [
     {
-      "address": "0xedbad45827565de6a516cc37a9bd473b45ca1c6883e8d66aeaf7ec6e72b7dd",
-      "class_hash": "0x5789717d6fb80fa65625be0fa49bc092aac8686ac6838f60d87776464f8ec93",
+      "address": "0x65db680199c47353ad0f5eb95b9c610c8d0dbc04f3722fb9f13854e6e0cfec1",
+      "class_hash": "0x49624fa99415e39ce703722b44a6ee5a1b3916ad7512151b456b2c21fb789a7",
       "abi": [
         {
           "type": "impl",
@@ -1325,6 +1325,38 @@
               "type": "function",
               "name": "create_game",
               "inputs": [],
+              "outputs": [],
+              "state_mutability": "external"
+            },
+            {
+              "type": "function",
+              "name": "join_game",
+              "inputs": [
+                {
+                  "name": "game_id",
+                  "type": "core::integer::u128"
+                }
+              ],
+              "outputs": [],
+              "state_mutability": "external"
+            },
+            {
+              "type": "function",
+              "name": "claim_tile",
+              "inputs": [
+                {
+                  "name": "game_id",
+                  "type": "core::integer::u128"
+                },
+                {
+                  "name": "x",
+                  "type": "core::integer::u8"
+                },
+                {
+                  "name": "y",
+                  "type": "core::integer::u8"
+                }
+              ],
               "outputs": [],
               "state_mutability": "external"
             }
@@ -1454,6 +1486,8 @@
       "selector": "0x3c1d3d37dc65b45844ab37b8e5b73ad0f43bec5c52aa2dacea917e2a2fdd7e7",
       "systems": [
         "create_game",
+        "join_game",
+        "claim_tile",
         "upgrade"
       ]
     }
@@ -1461,7 +1495,7 @@
   "models": [
     {
       "members": [],
-      "class_hash": "0xfe50a770381d6bfc815c37dadf74ee4061b6f807a5efe6c490ff35875e75ac",
+      "class_hash": "0x6dec180c0d84b8f61251a02a77da2094e88ff40f909bb6078c807425b8a4b30",
       "tag": "grid_guru-Game",
       "selector": "0x417804f259f3de4f0a2396c529df4812ddef14520594f074b5b95cf0e28c48d"
     },
