@@ -35,6 +35,8 @@ pub mod PlayableComponent {
             let mut game: Game = GameTrait::new(game_id, player.address);
             let mut tile: Tile = TileTrait::new(game_id, 0, 0, player.address);
 
+            game.move_count += 1;
+
             store.set_player(player);
             store.set_game(game);
             store.set_tile(tile);
@@ -47,6 +49,7 @@ pub mod PlayableComponent {
             let mut game: Game = store.get_game(game_id);
             game.join(player.address);
             let mut tile: Tile = TileTrait::new(game_id, 7, 7, player.address);
+            game.move_count += 1;
 
             store.set_game(game);
             store.set_player(player);
@@ -63,6 +66,7 @@ pub mod PlayableComponent {
 
             TileAssert::assert_is_valid_move(world, game_id, x, y, player.address);
             let mut tile: Tile = TileTrait::new(game_id, x, y, player.address);
+            game.move_count += 1;
 
             game.handle_player_switch();
 

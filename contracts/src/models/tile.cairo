@@ -63,27 +63,25 @@ pub impl TileAssert of AssertTrait {
         assert(x < 8 && y < 8, errors::OUT_OF_BOUNDS);
         assert(player == game.current_player, errors::NOT_PLAYER_TURN);
 
-        if game.move_count <= 1 {
-            return ();
+        if game.move_count >= 2 {
+            let mut adjacents = tile.get_adjacent_positions(x, y);
+
+            let mut has_adjacent = false;
+            let mut i = 0;
+            loop {
+                if i >= adjacents.len() {
+                    break;
+                }
+                let (adj_x, adj_y) = *adjacents[i];
+                let adjacent_tile = store.get_tile(game_id, adj_x, adj_y);
+                if adjacent_tile.owner == player {
+                    has_adjacent = true;
+                    break;
+                }
+                i += 1;
+            };
+
+            assert(has_adjacent, errors::NO_ADJACENT_TILE);
         }
-
-        let mut adjacents = tile.get_adjacent_positions(x, y);
-
-        let mut has_adjacent = false;
-        let mut i = 0;
-        loop {
-            if i >= adjacents.len() {
-                break;
-            }
-            let (adj_x, adj_y) = *adjacents[i];
-            let adjacent_tile = store.get_tile(game_id, adj_x, adj_y);
-            if adjacent_tile.owner == player {
-                has_adjacent = true;
-                break;
-            }
-            i += 1;
-        };
-
-        assert(has_adjacent, errors::NO_ADJACENT_TILE);
     }
 }
