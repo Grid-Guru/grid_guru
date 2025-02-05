@@ -9,8 +9,8 @@ use torii_client::client::Client as ToriiClient;
 use torii_grpc::types::schema::Entity as ToriiEntity;
 use torii_grpc::types::Query as ToriiQuery;
 
-pub struct ToriiFromTokioPlugin;
-impl Plugin for ToriiFromTokioPlugin {
+pub struct ToriiPlugin;
+impl Plugin for ToriiPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(Startup, setup_entity_channel_resource);
         app.add_systems(
