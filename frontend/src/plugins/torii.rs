@@ -29,8 +29,8 @@ pub struct ToriiChannel {
 
 #[derive(Component, Debug)]
 pub struct BevyfiedDojoEntity {
-    keys: Felt,
-    models: Vec<DojoStruct>,
+    pub keys: Felt,
+    pub models: Vec<DojoStruct>,
 }
 
 fn spawn_torii_entities(
