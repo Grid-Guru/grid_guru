@@ -96,7 +96,7 @@ async fn create_torii_client() -> Result<ToriiClient, ToriiError> {
     let rpc_url = "http://127.0.0.1:5050".to_string();
     let relay_url = "/ip4/127.0.0.1/tcp/9090".to_string();
     let world = Felt::from_hex_unchecked(
-        "0x01e89f62b131b603182587f456573804202bb4db5223bd3bf8d1846b51c47e60",
+        "0x057a3f7a51ea6dd81fc1362300aaf3cfbcd84fedf1016a5f43a0694cffea39c",
     );
 
     ToriiClient::new(torii_url, rpc_url, relay_url, world).await
