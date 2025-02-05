@@ -8,6 +8,10 @@
   packages = with pkgs; [ 
     git 
     protobuf
+
+    # wsl deps
+    alsa-lib
+    udev
   ];
 
   # https://devenv.sh/languages/
