@@ -1,20 +1,41 @@
-use bevy::{input::keyboard::Key, prelude::*};
+use bevy::prelude::*;
 use dojo_types::schema::Struct as DojoStruct;
 use starknet::core::types::Felt;
 
-use super::torii::BevyfiedDojoEntity;
+use super::torii::{BevyfiedDojoEntity, UpdatedBevyfiedDojoEntity};
 
 pub struct DojoModelsPlugin;
 impl Plugin for DojoModelsPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Update, convert_to_bevy);
+        app.add_observer(convert_to_bevy);
+        app.add_observer(list_entities);
     }
 }
 
-fn convert_to_bevy(mut commands: Commands, query: Query<&BevyfiedDojoEntity>) {
+fn list_entities(trigger: Trigger<Converted>, query: Query<&DojoKey>) {
+    for entity in query.iter() {
+        info!("Converted entities: {entity:?}");
+    }
+}
+
+#[derive(Event, Debug)]
+struct Converted;
+
+fn convert_to_bevy(
+    _trigger: Trigger<UpdatedBevyfiedDojoEntity>,
+    mut commands: Commands,
+    query: Query<&BevyfiedDojoEntity>,
+    query_dojokey: Query<(Entity, &DojoKey)>,
+) {
     for dojo_entity in query.iter() {
-        let dojo_key = dojo_entity.keys;
-        let id = commands.spawn(DojoKey(dojo_key)).id();
+        let key = dojo_entity.keys;
+        let bevy_id;
+        if let Some((id, _)) = query_dojokey.iter().find(|(_, k)| k.0 == key) {
+            bevy_id = id;
+        } else {
+            let id = commands.spawn(DojoKey(key)).id();
+            bevy_id = id;
+        }
 
         let dojo_models = dojo_entity.models.clone();
         for dojo_model in dojo_models.iter() {
@@ -23,22 +44,54 @@ fn convert_to_bevy(mut commands: Commands, query: Query<&BevyfiedDojoEntity>) {
                 "grid_guru-Player" => {
                     let player = Player::from(dojo_model.clone());
                     info!("created bevy native player component: {player:?}");
-                    commands.entity(id).insert(player);
+                    commands
+                        .entity(bevy_id)
+                        .entry::<Player>()
+                        .and_modify(move |mut p| {
+                            p.game_id = player.game_id;
+                            p.address = player.address;
+                            p.score = player.score;
+                        })
+                        .or_insert(player);
                 }
                 "grid_guru-Tile" => {
                     let tile = Tile::from(dojo_model.clone());
                     info!("created bevy native tile component: {tile:?}");
-                    commands.entity(id).insert(tile);
+                    commands
+                        .entity(bevy_id)
+                        .entry::<Tile>()
+                        .and_modify(move |mut t| {
+                            t.game_id = tile.game_id;
+                            t.x = tile.x;
+                            t.y = tile.y;
+                            t.owner = tile.owner;
+                        })
+                        .or_insert(tile);
                 }
                 "grid_guru-Game" => {
                     let game = Game::from(dojo_model.clone());
                     info!("created bevy native game component: {game:?}");
-                    commands.entity(id).insert(game);
+                    commands
+                        .entity(bevy_id)
+                        .entry::<Game>()
+                        .and_modify(move |mut g| {
+                            g.game_id = game.game_id;
+                            g.player_one = game.player_one;
+                            g.player_two = game.player_two;
+                            g.current_player = game.current_player;
+                            g.winner = game.winner;
+                            g.move_count = game.move_count;
+                            g.status = game.status;
+                        })
+                        .or_insert(game);
                 }
                 _ => {}
             }
         }
+        let count = query_dojokey.iter().count();
+        info!("number of converted dojo entities: {count:?}");
     }
+    commands.trigger(Converted);
 }
 
 #[derive(Component, Debug)]
@@ -107,7 +160,7 @@ impl From<DojoStruct> for Game {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub enum GameStatus {
     Pending,
     InProgress,
@@ -129,7 +182,7 @@ impl From<u8> for GameStatus {
     }
 }
 
-#[derive(Component, Debug)]
+#[derive(Component, Clone, Debug)]
 pub struct Player {
     pub game_id: u128,
     pub address: Felt,
@@ -164,7 +217,6 @@ impl From<DojoStruct> for Player {
     }
 }
 
-// Struct { name: "grid_guru-Player", children: [Member { name: "game_id", ty: Primitive(U128(Some(3))), key: true }, Member { name: "address", ty: Primitive(ContractAddress(Some(0x127fd5f1fe78a71f8bcd1fec63e3fe2f0486b6ecd5c86a0466c3a21fa5cfcec))), key: true }, Member { name: "score", ty: Primitive(U8(Some(0))), key: false }] }
 #[derive(Component, Debug)]
 pub struct Tile {
     pub game_id: u128,

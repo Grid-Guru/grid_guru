@@ -33,6 +33,9 @@ pub struct BevyfiedDojoEntity {
     pub models: Vec<DojoStruct>,
 }
 
+#[derive(Event, Debug)]
+pub struct UpdatedBevyfiedDojoEntity;
+
 fn spawn_torii_entities(
     mut commands: Commands,
     mut channel: ResMut<ToriiChannel>,
@@ -55,6 +58,8 @@ fn spawn_torii_entities(
             info!("created new bevyfied dojo entity: {new_entity:?}");
             commands.spawn(new_entity);
         }
+
+        commands.trigger(UpdatedBevyfiedDojoEntity);
     }
 }
 
