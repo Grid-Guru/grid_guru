@@ -12,9 +12,15 @@ impl Plugin for DojoModelsPlugin {
     }
 }
 
-fn list_entities(trigger: Trigger<Converted>, query: Query<&DojoKey>) {
-    for entity in query.iter() {
-        info!("Converted entities: {entity:?}");
+fn list_entities(
+    trigger: Trigger<Converted>,
+    mut commands: Commands,
+    query: Query<(Entity, &DojoKey)>,
+) {
+    let count = query.iter().count();
+    info!("number of converted dojo entities: {count:?}");
+    for (id, entity) in query.iter() {
+        commands.entity(id).log_components();
     }
 }
 
@@ -88,8 +94,6 @@ fn convert_to_bevy(
                 _ => {}
             }
         }
-        let count = query_dojokey.iter().count();
-        info!("number of converted dojo entities: {count:?}");
     }
     commands.trigger(Converted);
 }
