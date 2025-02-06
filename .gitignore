@@ -10,3 +10,6 @@ devenv.local.nix
 
 # cargo
 /frontend/target
+
+# assets
+/frontend/assets

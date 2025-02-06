@@ -13,13 +13,13 @@ impl Plugin for DojoModelsPlugin {
 }
 
 fn list_entities(
-    trigger: Trigger<Converted>,
+    _trigger: Trigger<Converted>,
     mut commands: Commands,
     query: Query<(Entity, &DojoKey)>,
 ) {
     let count = query.iter().count();
     info!("number of converted dojo entities: {count:?}");
-    for (id, entity) in query.iter() {
+    for (id, _) in query.iter() {
         commands.entity(id).log_components();
     }
 }
