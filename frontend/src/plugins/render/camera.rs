@@ -1,9 +1,10 @@
-use bevy::prelude::*;
+use bevy::{color::palettes::css::BLACK, prelude::*};
 
 pub struct RCameraPlugin;
 impl Plugin for RCameraPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(Startup, setup_camera);
+        app.insert_resource(ClearColor(BLACK.into()));
     }
 }
 

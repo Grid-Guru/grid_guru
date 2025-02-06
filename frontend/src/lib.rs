@@ -10,9 +10,6 @@ use plugins::{
 pub struct GamePlugin;
 impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
-        // app.add_plugins(MinimalPlugins);
-        // app.add_plugins(StatesPlugin);
-        // app.add_plugins(LogPlugin::default());
         app.add_plugins(DefaultPlugins);
         app.add_plugins(WorldInspectorPlugin::new());
         app.add_plugins(TokioPlugin);
