@@ -1,6 +1,6 @@
 // define the interface
 #[starknet::interface]
-trait IActions<TState> {
+pub trait IActions<TState> {
     fn create_game(ref self: TState);
     fn join_game(ref self: TState, game_id: u128);
     fn claim_tile(ref self: TState, game_id: u128, x: u8, y: u8);
@@ -20,7 +20,7 @@ pub mod actions {
     #[storage]
     struct Storage {
         #[substorage(v0)]
-        playable: PlayableComponent::Storage,
+        pub playable: PlayableComponent::Storage,
     }
 
     #[event]

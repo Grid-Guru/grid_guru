@@ -1,6 +1,4 @@
-mod setup {
-    // Core imports
-    use core::debug::PrintTrait;
+pub mod setup {
 
     // Dojo imports
     use dojo::model::{ModelStorage, ModelStorageTest, ModelValueStorage};
@@ -22,8 +20,12 @@ mod setup {
     trait IDojoInit<ContractState> {}
 
     #[derive(Drop)]
-    struct Systems {
-        actions: IActionsDispatcher,
+    pub struct Systems {
+        pub actions: IActionsDispatcher,
+    }
+
+    pub fn OWNER() -> ContractAddress {
+        starknet::contract_address_const::<'OWNER'>()
     }
 
     #[inline]
@@ -33,7 +35,7 @@ mod setup {
             resources: [
                 TestResource::Model(models::m_Player::TEST_CLASS_HASH),
                 TestResource::Model(models::m_Game::TEST_CLASS_HASH),
-                TestResource::Model(models::m_Position::TEST_CLASS_HASH),
+                TestResource::Model(models::m_Tile::TEST_CLASS_HASH),
                 TestResource::Contract(actions::TEST_CLASS_HASH),
             ]
                 .span(),
@@ -49,8 +51,9 @@ mod setup {
     }
 
     #[inline(always)]
-    fn spawn_game() -> (WorldStorage, Systems) {
+    pub fn spawn_game() -> (WorldStorage, Systems) {
         // [Setup] World
+        set_contract_address(OWNER());
         let namespace_def = setup_namespace();
         let world = spawn_test_world([namespace_def].span());
         world.sync_perms_and_inits(setup_contracts());

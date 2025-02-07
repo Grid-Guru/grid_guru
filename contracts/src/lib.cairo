@@ -21,4 +21,5 @@ pub mod helpers {}
 #[cfg(test)]
 pub mod tests {
     pub mod setup;
+    pub mod test_actions;
 }
