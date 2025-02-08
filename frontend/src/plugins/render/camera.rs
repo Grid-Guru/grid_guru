@@ -3,22 +3,35 @@ use bevy::prelude::*;
 pub struct RCameraPlugin;
 impl Plugin for RCameraPlugin {
     fn build(&self, app: &mut App) {
+        app.insert_resource(ClearColor(Color::srgb_u8(30, 30, 30)));
         app.add_systems(Startup, setup_camera);
     }
 }
 
 fn setup_camera(mut commands: Commands) {
-    //     // light
+    // lights
+    let mut directional_light = DirectionalLight::default();
+    directional_light.shadows_enabled = true;
+    directional_light.illuminance = 2000.0;
+    commands.spawn((Transform::from_xyz(4.0, 2.0, 4.0), directional_light));
+
+    let point_light = PointLight {
+        shadows_enabled: false,
+        ..default()
+    };
+    let light_location = Transform::from_xyz(4.2, 4.2, -10.0);
     commands.spawn((
-        PointLight {
-            shadows_enabled: true,
-            ..default()
-        },
-        Transform::from_xyz(4.0, 2.0, 4.0),
+        light_location.looking_at(Vec3::ZERO.with_x(4.2).with_y(4.2), Vec3::Z),
+        point_light,
     ));
-    //     // camera
+
+    // camera
+    let mut projection = OrthographicProjection::default_3d();
+    projection.scale = 0.008;
+    let camera_location = Transform::from_xyz(-5.0, -5.0, 12.0);
     commands.spawn((
         Camera3d::default(),
-        Transform::from_xyz(-2.5, 4.5, 9.0).looking_at(Vec3::ZERO, Vec3::Y),
+        Projection::Orthographic(projection),
+        camera_location.looking_at(Vec3::ZERO.with_x(4.2).with_y(4.2), Vec3::Z),
     ));
 }

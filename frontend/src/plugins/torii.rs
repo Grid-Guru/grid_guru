@@ -27,9 +27,21 @@ pub struct ToriiChannel {
     tx: mpsc::Sender<ToriiEntity>,
 }
 
+#[derive(Reflect, Debug, PartialEq, Eq, Clone)]
+pub struct BevyFelt {
+    felt_string: String,
+}
+impl From<Felt> for BevyFelt {
+    fn from(value: Felt) -> Self {
+        BevyFelt {
+            felt_string: value.to_string(),
+        }
+    }
+}
+
 #[derive(Component, Debug)]
 pub struct BevyfiedDojoEntity {
-    pub keys: Felt,
+    pub keys: BevyFelt,
     pub models: Vec<DojoStruct>,
 }
 
@@ -44,7 +56,7 @@ fn spawn_torii_entities(
     if let Ok(entity_from_torii) = channel.rx.try_recv() {
         if let Some(mut existing_entity) = query
             .iter_mut()
-            .find(|e| e.keys == entity_from_torii.hashed_keys)
+            .find(|e| e.keys.felt_string == entity_from_torii.hashed_keys.to_string())
         {
             info!("updating existing bevyfied entity...");
             info!("from: {existing_entity:?}");
@@ -52,7 +64,9 @@ fn spawn_torii_entities(
             info!("to: {existing_entity:?}");
         } else {
             let new_entity = BevyfiedDojoEntity {
-                keys: entity_from_torii.hashed_keys,
+                keys: BevyFelt {
+                    felt_string: entity_from_torii.hashed_keys.to_string(),
+                },
                 models: entity_from_torii.models,
             };
             info!("created new bevyfied dojo entity: {new_entity:?}");

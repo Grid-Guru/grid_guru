@@ -10,8 +10,8 @@
     protobuf
 
     # wsl deps
-    alsa-lib
-    udev
+    # alsa-lib
+    # udev
   ];
 
   # https://devenv.sh/languages/
