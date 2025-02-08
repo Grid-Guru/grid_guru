@@ -30,24 +30,24 @@ pub struct AllAssetHandles {
 
 fn load_asset(mut commands: Commands, asset_server: Res<AssetServer>) {
     // characters
-    let rogue = "kaykit_skeletons\\characters\\gltf\\Skeleton_Rogue.glb";
-    let mage = "kaykit_skeletons\\characters\\gltf\\Skeleton_Mage.glb";
-    let minion = "kaykit_skeletons\\characters\\gltf\\Skeleton_Minion.glb";
-    let warrior = "kaykit_skeletons\\characters\\gltf\\Skeleton_Warrior.glb";
+    let rogue = "Skeleton_Rogue.glb";
+    let mage = "Skeleton_Mage.glb";
+    let minion = "Skeleton_Minion.glb";
+    let warrior = "Skeleton_Warrior.glb";
 
     // blocks
-    let dirt = "kenney_minidungeon\\Models\\glb\\dirt.glb";
-    let floor = "kenney_minidungeon\\Models\\glb\\floor.glb";
-    let floor_detail = "kenney_minidungeon\\Models\\glb\\floor-detail.glb";
-    let barrel = "kenney_minidungeon\\Models\\glb\\barrel.glb";
-    let wall = "kenney_minidungeon\\Models\\glb\\wall.glb";
+    let dirt = "dirt.glb";
+    let floor = "floor.glb";
+    let floor_detail = "floor-detail.glb";
+    let barrel = "barrel.glb";
+    let wall = "wall.glb";
 
     // weapons
-    let staff = "kaykit_skeletons\\assets\\gltf\\Skeleton_Staff.gltf";
-    let axe = "kaykit_skeletons\\assets\\gltf\\Skeleton_Axe.gltf";
-    let blade = "kaykit_skeletons\\assets\\gltf\\Skeleton_Blade.gltf";
-    let shield = "kaykit_skeletons\\assets\\gltf\\Skeleton_shield_Large_A.gltf";
-    let crossbow = "kaykit_skeletons\\assets\\gltf\\Skeleton_Crossbow.gltf";
+    let staff = "Skeleton_Staff.gltf";
+    let axe = "Skeleton_Axe.gltf";
+    let blade = "Skeleton_Blade.gltf";
+    let shield = "Skeleton_shield_Large_A.gltf";
+    let crossbow = "Skeleton_Crossbow.gltf";
 
     let all_asset_handles = AllAssetHandles {
         rogue: asset_server.load(GltfAssetLabel::Scene(0).from_asset(rogue)),
