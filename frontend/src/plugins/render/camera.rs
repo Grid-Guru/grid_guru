@@ -1,9 +1,9 @@
-use bevy::{asset::TrackAssets, color::palettes::css::BLACK, prelude::*};
+use bevy::prelude::*;
 
 pub struct RCameraPlugin;
 impl Plugin for RCameraPlugin {
     fn build(&self, app: &mut App) {
-        app.insert_resource(ClearColor(Color::srgb_u8(50, 50, 50)));
+        app.insert_resource(ClearColor(Color::srgb_u8(30, 30, 30)));
         app.add_systems(Startup, setup_camera);
     }
 }
@@ -15,15 +15,15 @@ fn setup_camera(mut commands: Commands) {
     directional_light.illuminance = 2000.0;
     commands.spawn((Transform::from_xyz(4.0, 2.0, 4.0), directional_light));
 
-    // let point_light = PointLight {
-    //     shadows_enabled: false,
-    //     ..default()
-    // };
-    // let light_location = Transform::from_xyz(4.0, 4.0, -3.0);
-    // commands.spawn((
-    //     light_location.looking_at(Vec3::ZERO.with_x(4.2).with_y(4.2), Vec3::Z),
-    //     point_light,
-    // ));
+    let point_light = PointLight {
+        shadows_enabled: false,
+        ..default()
+    };
+    let light_location = Transform::from_xyz(4.2, 4.2, -10.0);
+    commands.spawn((
+        light_location.looking_at(Vec3::ZERO.with_x(4.2).with_y(4.2), Vec3::Z),
+        point_light,
+    ));
 
     // camera
     let mut projection = OrthographicProjection::default_3d();
