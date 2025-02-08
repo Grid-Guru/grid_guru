@@ -11,15 +11,16 @@ pub struct RPlayerPlugin;
 impl Plugin for RPlayerPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(Update, spawn_player_markers.run_if(is_game_ready));
+        app.add_systems(Update, animate_markers);
     }
 }
 
-pub const X_DIFF: f32 = -0.0;
+pub const X_DIFF: f32 = 0.;
 pub const X_MUL: f32 = 1.2;
 pub const Y_MUL: f32 = 1.2;
 pub const Y_DIFF: f32 = 0.5;
-pub const Z_HEIGHT: f32 = 1.0;
-pub const SCALE: f32 = 1.0;
+pub const Z_HEIGHT: f32 = 1.;
+pub const SCALE: f32 = 1.;
 pub const ANGLE_90: f32 = 1.570796;
 
 #[derive(Component, Reflect)]
@@ -79,5 +80,11 @@ fn spawn_player_markers(
                 },
             ));
         }
+    }
+}
+
+fn animate_markers(mut query: Query<&mut Transform, With<RenderedPlayerMarker>>, time: Res<Time>) {
+    for mut marker in query.iter_mut() {
+        marker.rotate_z(0.5 * time.delta_secs());
     }
 }
