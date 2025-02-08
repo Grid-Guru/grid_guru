@@ -33,7 +33,7 @@ pub mod PlayableComponent {
             let mut store: Store = StoreTrait::new(world);
             let game_id: u128 = world.dispatcher.uuid().into() + 1;
 
-            let mut player: Player = PlayerTrait::new(game_id, get_caller_address());
+            let mut player: Player = PlayerTrait::new(game_id, get_caller_address(), 0, 0);
             let mut game: Game = GameTrait::new(game_id, player.address);
             let mut tile: Tile = TileTrait::new(game_id, 0, 0, player.address);
 
@@ -47,7 +47,7 @@ pub mod PlayableComponent {
         fn join_game(ref self: ComponentState<TState>, world: WorldStorage, game_id: u128) {
             let mut store: Store = StoreTrait::new(world);
 
-            let mut player: Player = PlayerTrait::new(game_id, get_caller_address());
+            let mut player: Player = PlayerTrait::new(game_id, get_caller_address(), 7, 7);
             let mut game: Game = store.get_game(game_id);
             game.join(player.address);
             let mut tile: Tile = TileTrait::new(game_id, 7, 7, player.address);
