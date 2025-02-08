@@ -1,7 +1,4 @@
-use bevy::{
-    color::palettes::css::{BLACK, BLUE, WHITE},
-    prelude::*,
-};
+use bevy::{color::palettes::css::BLACK, prelude::*};
 
 pub struct RCameraPlugin;
 impl Plugin for RCameraPlugin {
@@ -13,7 +10,7 @@ impl Plugin for RCameraPlugin {
 
 fn setup_camera(mut commands: Commands) {
     //     // light
-    let point_light = PointLight {
+    let _point_light = PointLight {
         shadows_enabled: false,
         ..default()
     };
