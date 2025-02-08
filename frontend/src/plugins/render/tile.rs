@@ -1,18 +1,22 @@
 use bevy::prelude::*;
 
-pub struct RPlayerPlugin;
-impl Plugin for RPlayerPlugin {
+use super::{assets::AssetHandler, constants::MULTIPLIER};
+
+pub struct RTilePlugin;
+impl Plugin for RTilePlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, setup_tile);
+        app.add_systems(PostStartup, spawn_tiles);
     }
 }
 
-fn setup_tile(mut commands: Commands, asset_server: Res<AssetServer>) {
-    let _character_asset_path = "kaykit_skeletons\\characters\\gltf\\Skeleton_Mage.glb";
-    let tile_asset_path = "kenney_minidungeon\\Models\\glb\\dirt.glb";
-
-    let my_gltf =
-        SceneRoot(asset_server.load(GltfAssetLabel::Scene(0).from_asset(tile_asset_path)));
-
-    commands.spawn(my_gltf);
+fn spawn_tiles(mut commands: Commands, asset_handler: Res<AssetHandler>) {
+    let grid_array = (7, 7);
+    for i in 0..grid_array.0 {
+        for j in 0..grid_array.1 {
+            let dirt_block = SceneRoot(asset_handler.dirt_block.clone());
+            let transform =
+                Transform::from_xyz((i as f32) * MULTIPLIER, (j as f32) * MULTIPLIER, 0.0);
+            commands.spawn((dirt_block, transform));
+        }
+    }
 }
