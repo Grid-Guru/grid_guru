@@ -1,7 +1,10 @@
 use bevy::prelude::*;
 use starknet::{
-    accounts::SingleOwnerAccount,
-    core::types::Felt,
+    accounts::{Account, SingleOwnerAccount},
+    core::{
+        types::{Call, Felt},
+        utils::get_selector_from_name,
+    },
     providers::{jsonrpc::HttpTransport, JsonRpcClient, Provider, Url},
     signers::{LocalWallet, SigningKey},
 };
@@ -32,7 +35,7 @@ fn setup_starknet_channel_resource(mut commands: Commands) {
 }
 
 fn spawn_starknet_caller_thread(rt: Res<TokioRuntimeResource>, channel: Res<StarknetChannel>) {
-    let tx = channel.tx.clone();
+    let _tx = channel.tx.clone();
     let _ = rt.0.spawn(async move {
         let provider = get_rpc_provider().await;
         let (signer, address) = get_player1_account();
@@ -46,6 +49,21 @@ fn spawn_starknet_caller_thread(rt: Res<TokioRuntimeResource>, channel: Res<Star
             starknet::accounts::ExecutionEncoding::New,
         );
         info!("got a working starknet account! yippie!");
+
+        let tx_res = account
+            .execute_v3(vec![Call {
+                to: Felt::from_hex(
+                    "0x0499f2e2515b64f360601510e4bf47b904ecddc50a40ce6e461e1dd4d7389398",
+                )
+                .unwrap(),
+                selector: get_selector_from_name("create_game").unwrap(),
+                calldata: vec![],
+            }])
+            .send()
+            .await
+            .unwrap();
+
+        info!("starknet tx result: {tx_res:?}");
     });
 }
 
@@ -59,12 +77,11 @@ async fn get_rpc_provider() -> JsonRpcClient<HttpTransport> {
 
 fn get_player1_account() -> (LocalWallet, Felt) {
     let signer = LocalWallet::from(SigningKey::from_secret_scalar(
-        Felt::from_hex("0x3e3979c1ed728490308054fe357a9f49cf67f80f9721f44cc57235129e090f4")
-            .unwrap(),
+        Felt::from_hex("0xc5b2fcab997346f3ea1c00b002ecf6f382c5f9c9659a3894eb783c5320f912").unwrap(),
     ));
 
     let address =
-        Felt::from_hex("0x6677fe62ee39c7b07401f754138502bab7fac99d2d3c5d37df7d1c6fab10819")
+        Felt::from_hex("0x127fd5f1fe78a71f8bcd1fec63e3fe2f0486b6ecd5c86a0466c3a21fa5cfcec")
             .unwrap();
 
     (signer, address)
