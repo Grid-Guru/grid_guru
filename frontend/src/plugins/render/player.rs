@@ -31,7 +31,12 @@ pub struct DerivePlayerPosition {
 }
 
 fn is_game_ready(game_query: Query<&Game>) -> bool {
-    game_query.iter().count() > 0
+    // game_query.iter().count() > 0
+    if let Some(_game) = game_query.iter().find(|g| g.game_id == 1) {
+        true
+    } else {
+        false
+    }
 }
 
 #[derive(Component, Reflect)]
@@ -47,7 +52,7 @@ fn spawn_player_markers(
     game_query: Query<&Game>,
     render_marker_query: Query<&mut RenderedPlayerMarker>,
 ) {
-    let game = game_query.single();
+    let game = game_query.iter().find(|g| g.game_id == 1).unwrap();
     let p1 = game.player_one.clone();
     let _p2 = game.player_two.clone();
 
