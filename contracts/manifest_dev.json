@@ -1252,8 +1252,8 @@
   },
   "contracts": [
     {
-      "address": "0x681148eb465421c702b06cfe8d0c357ecffc884cc6bf440000d7a0afc3da3f3",
-      "class_hash": "0x39365ea7c5915576be9e8fbc982801da75534483b93c3775ea959439a61fded",
+      "address": "0x30c38834017b28013c8630c2200e3dc7438677d100bd2db9958573fdd924d52",
+      "class_hash": "0x7c4b434a32bcfa10d00d1fbb54c9a84485f352ed227b148358f79e95c8f5460",
       "abi": [
         {
           "type": "impl",
@@ -1460,6 +1460,12 @@
         },
         {
           "type": "event",
+          "name": "achievement::components::achievable::AchievableComponent::Event",
+          "kind": "enum",
+          "variants": []
+        },
+        {
+          "type": "event",
           "name": "grid_guru::systems::actions::actions::Event",
           "kind": "enum",
           "variants": [
@@ -1476,6 +1482,11 @@
             {
               "name": "PlayableEvent",
               "type": "grid_guru::components::playable::PlayableComponent::Event",
+              "kind": "flat"
+            },
+            {
+              "name": "AchievableEvent",
+              "type": "achievement::components::achievable::AchievableComponent::Event",
               "kind": "flat"
             }
           ]
@@ -1501,7 +1512,7 @@
     },
     {
       "members": [],
-      "class_hash": "0x496d75f32280a1f0eaf29e7f64760efbe537871c0dc8abe3a548aeffc164c05",
+      "class_hash": "0x7b91fc50347d2133da3216e4441cead5bca42fc3a0536a5e9869babe1138aad",
       "tag": "grid_guru-Player",
       "selector": "0x3d3b40383444288594e161b8e6ed08a4f6b807387455b9b320a38cee8633c76"
     },
@@ -1512,5 +1523,18 @@
       "selector": "0x7559f30b9c196ff040d00cefd69545652def9d0525dce5695322afcb13dc632"
     }
   ],
-  "events": []
+  "events": [
+    {
+      "members": [],
+      "class_hash": "0x19a5c06b3a8417ff3f9883be3acb0e33c835795bd81fb87a5a47e6ed7d2d3af",
+      "tag": "grid_guru-TrophyCreation",
+      "selector": "0x2c7321102e014d5534e58586b728f993bce97565d8bf9be12588c331df82f36"
+    },
+    {
+      "members": [],
+      "class_hash": "0x1922d2cd8b63eccf66321673234a52126cd9f0ab1bf6298c5abee6ee80c8990",
+      "tag": "grid_guru-TrophyProgression",
+      "selector": "0x121e6000a31eaf038de673314e38ffd9f9e39de688fc47ff57dc96b98e5d346"
+    }
+  ]
 }

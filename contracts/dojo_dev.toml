@@ -24,3 +24,5 @@ world_address = "0x057a3f7a51ea6dd81fc1362300aaf3cfbcd84fedf1016a5f43a0694cffea3
 
 [writers]
 "grid_guru" = ["grid_guru-actions"]
+"grid_guru-TrophyCreation" = ["grid_guru-actions"]
+"grid_guru-TrophyProgression" = ["grid_guru-actions"]

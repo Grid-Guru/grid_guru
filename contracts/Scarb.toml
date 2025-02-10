@@ -7,13 +7,18 @@ edition = "2024_07"
 [[target.starknet-contract]]
 sierra = true
 casm = true
-build-external-contracts = ["dojo::world::world_contract::world"]
+build-external-contracts = [
+  "dojo::world::world_contract::world",
+  "achievement::events::index::e_TrophyCreation",
+  "achievement::events::index::e_TrophyProgression",
+]
 
 [cairo]
 sierra-replace-ids = true
 
 [dependencies]
 dojo = { git = "https://github.com/dojoengine/dojo", tag = "v1.1.2" }
+achievement = { git = "https://github.com/cartridge-gg/arcade", tag = "v1.1.2" }
 starknet = "2.9.2"
 
 [dev-dependencies]
