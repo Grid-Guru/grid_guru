@@ -1,16 +1,18 @@
 pub mod setup {
-
     // Dojo imports
     use dojo::model::{ModelStorage, ModelStorageTest, ModelValueStorage};
     use dojo::world::{WorldStorage, WorldStorageTrait};
     use dojo_cairo_test::{
-        ContractDef, ContractDefTrait, NamespaceDef, TestResource, WorldStorageTestTrait, spawn_test_world,
+        ContractDef, ContractDefTrait, NamespaceDef, TestResource, WorldStorageTestTrait,
+        spawn_test_world,
     };
     use grid_guru::constants::DEFAULT_NS;
 
     // Internal imports
     use grid_guru::models::{index as models};
-    use grid_guru::systems::actions::{IActions, IActionsDispatcher, IActionsDispatcherTrait, actions};
+    use grid_guru::systems::actions::{
+        IActions, IActionsDispatcher, IActionsDispatcherTrait, actions,
+    };
 
     // Starknet imports
     use starknet::ContractAddress;
@@ -37,6 +39,10 @@ pub mod setup {
                 TestResource::Model(models::m_Game::TEST_CLASS_HASH),
                 TestResource::Model(models::m_Tile::TEST_CLASS_HASH),
                 TestResource::Contract(actions::TEST_CLASS_HASH),
+                TestResource::Event(achievement::events::index::e_TrophyCreation::TEST_CLASS_HASH),
+                TestResource::Event(
+                    achievement::events::index::e_TrophyProgression::TEST_CLASS_HASH,
+                ),
             ]
                 .span(),
         }

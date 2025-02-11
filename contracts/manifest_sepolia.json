@@ -1,8 +1,8 @@
 {
   "world": {
     "class_hash": "0x4b767fda48530353c2e44e4b9433f4d75c6c9974aaff43ecc00de9455eb71b8",
-    "address": "0x57a3f7a51ea6dd81fc1362300aaf3cfbcd84fedf1016a5f43a0694cffea39c6",
-    "seed": "shinigami_template",
+    "address": "0x68a9625dd8df8cc003ceefa9758dc80c7886a29f7dabaf601164d604e55d9e0",
+    "seed": "shinigami_templa",
     "name": "Grid Guru",
     "entrypoints": [
       "uuid",
@@ -1252,8 +1252,8 @@
   },
   "contracts": [
     {
-      "address": "0x30c38834017b28013c8630c2200e3dc7438677d100bd2db9958573fdd924d52",
-      "class_hash": "0x7c4b434a32bcfa10d00d1fbb54c9a84485f352ed227b148358f79e95c8f5460",
+      "address": "0x172b5e7345a85745b9fc8d1b5f67a3d98992a1306ef2d2522bc76f828e5b3ab",
+      "class_hash": "0x144bc88d0d96e09a553577b34c2ac83b54c044a359c4e041f0a3046744c8585",
       "abi": [
         {
           "type": "impl",
