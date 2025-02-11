@@ -1,24 +1,20 @@
 #[starknet::component]
 pub mod PlayableComponent {
-    // Dojo imports
     use dojo::world::WorldStorage;
     use dojo::world::{IWorldDispatcherTrait};
+    use starknet::{get_caller_address, get_block_timestamp};
+    use achievement::store::{Store as ArcadeStore, StoreTrait as ArcadeStoreTrait};
+
     use grid_guru::models::game::{Game, GameTrait, GameStatus};
     use grid_guru::models::player::{Player, PlayerTrait};
     use grid_guru::models::tile::{Tile, TileAssert, TileTrait};
-
-    // Internal imports
     use grid_guru::store::{Store, StoreTrait};
+    use grid_guru::types::task::{Task, TaskTrait};
 
-    // Starknet imports
-    use starknet::{get_caller_address};
-
-    // Errors
     pub mod errors {
         pub const GAME_NOT_IN_PROGRESS: felt252 = 'Game: not in progress';
     }
 
-    // Storage
     #[storage]
     pub struct Storage {}
 
@@ -78,6 +74,11 @@ pub mod PlayableComponent {
                 game.status = GameStatus::Completed;
                 game.winner = TileTrait::get_winner(world, game_id);
             }
+
+            let arcade_store: ArcadeStore = ArcadeStoreTrait::new(world);
+            let task_id = Task::Moving.identifier(0);
+            let time = get_block_timestamp();
+            arcade_store.progress(player.address.into(), task_id, 1, time);
 
             store.set_game(game);
             store.set_tile(tile);

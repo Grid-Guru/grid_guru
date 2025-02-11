@@ -1,4 +1,4 @@
-pub use grid_guru::elements::tasks::interface::TaskTrait;
+use grid_guru::elements::tasks::interface::TaskTrait;
 
 pub impl Moving of TaskTrait {
     #[inline]

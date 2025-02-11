@@ -2,7 +2,7 @@ rpc = "https://api.cartridge.gg/x/starknet/sepolia"
 
 allowed_origins = ["*"]
 # The World address to index.
-world_address = "0x3ca20a73360b4f7c6d49a52b7fb72c10a63004abcb9c5158e2c5fef92334486"
+world_address = "0x068a9625dd8df8cc003ceefa9758dc80c7886a29f7dabaf601164d604e55d9e0"
 
 # Indexing Options
 [indexing]
