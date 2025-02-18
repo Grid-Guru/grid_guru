@@ -31,6 +31,7 @@ pub struct Player {
     #[key]
     pub address: ContractAddress,
     pub score: u8,
+    pub grid: felt252,
     pub x: u8,
     pub y: u8,
 }

@@ -19,6 +19,7 @@ sierra-replace-ids = true
 [dependencies]
 dojo = { git = "https://github.com/dojoengine/dojo", tag = "v1.1.2" }
 achievement = { git = "https://github.com/cartridge-gg/arcade", tag = "v1.1.2" }
+origami_map = { git = "https://github.com/dojoengine/origami", tag = "v1.1.2" }
 starknet = "2.9.2"
 
 [dev-dependencies]

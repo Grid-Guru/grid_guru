@@ -29,7 +29,7 @@ pub mod PlayableComponent {
             let mut store: Store = StoreTrait::new(world);
             let game_id: u128 = world.dispatcher.uuid().into() + 1;
 
-            let mut player: Player = PlayerTrait::new(game_id, get_caller_address(), 0, 0);
+            let mut player: Player = PlayerTrait::new(game_id, get_caller_address(), 0x8000000000000000, 0, 0);
             let mut game: Game = GameTrait::new(game_id, player.address);
             let mut tile: Tile = TileTrait::new(game_id, 0, 0, player.address);
 
@@ -43,7 +43,7 @@ pub mod PlayableComponent {
         fn join_game(ref self: ComponentState<TState>, world: WorldStorage, game_id: u128) {
             let mut store: Store = StoreTrait::new(world);
 
-            let mut player: Player = PlayerTrait::new(game_id, get_caller_address(), 7, 7);
+            let mut player: Player = PlayerTrait::new(game_id, get_caller_address(), 0x0000000000000001, 7, 7);
             let mut game: Game = store.get_game(game_id);
             game.join(player.address);
             let mut tile: Tile = TileTrait::new(game_id, 7, 7, player.address);
@@ -60,19 +60,25 @@ pub mod PlayableComponent {
             let mut store: Store = StoreTrait::new(world);
 
             let mut game: Game = store.get_game(game_id);
-            let player: Player = store.get_player(game_id, get_caller_address());
+            let mut player: Player = store.get_player(game_id, get_caller_address());
             assert(game.status == GameStatus::InProgress, errors::GAME_NOT_IN_PROGRESS);
 
-            TileAssert::assert_is_valid_move(world, game_id, x, y, player.address);
+            let mut opponent_address = game.player_two;
+            if (player.address == game.player_two) {
+                opponent_address = game.player_one;
+            }
+            let mut opponent = store.get_player(game_id, opponent_address);
+            player.move(opponent.grid, x, y);
+            store.set_player(player);
+
             let mut tile: Tile = TileTrait::new(game_id, x, y, player.address);
             game.move_count += 1;
 
-            game.handle_player_switch();
-
-            let is_game_over = TileTrait::is_game_over(world, game_id);
-            if is_game_over {
+            if (player.remaining_moves(opponent.grid).len() == 0) {
                 game.status = GameStatus::Completed;
-                game.winner = TileTrait::get_winner(world, game_id);
+                game.winner = opponent.address;
+            } else {
+                game.handle_player_switch();
             }
 
             let arcade_store: ArcadeStore = ArcadeStoreTrait::new(world);
