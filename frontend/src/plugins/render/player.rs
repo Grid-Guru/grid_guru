@@ -2,7 +2,7 @@ use bevy::{asset::Handle, prelude::*};
 
 use crate::plugins::{
     dojo_models::{Game, Tile},
-    torii::BevyFelt,
+    networking::torii::BevyFelt,
 };
 
 use super::assets::AllAssetHandles;

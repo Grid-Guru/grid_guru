@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use dojo_types::schema::Struct as DojoStruct;
 
-use super::torii::{BevyFelt, BevyfiedDojoEntity, UpdatedBevyfiedDojoEntity};
+use crate::plugins::networking::torii::{BevyFelt, BevyfiedDojoEntity, UpdatedBevyfiedDojoEntity};
 
 pub struct DojoModelsPlugin;
 impl Plugin for DojoModelsPlugin {

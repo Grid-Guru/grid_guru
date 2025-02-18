@@ -10,6 +10,10 @@ use starknet::{
 };
 use tokio::sync::mpsc;
 
+use super::config::{
+    GAME_ACTIONS_CONTRACT_ADDRESS, PLAYER_ONE_ADDRESS, PLAYER_ONE_PRIVATE_KEY, PLAYER_TWO_ADDRESS,
+    PLAYER_TWO_PRIVATE_KEY, RPC_URL,
+};
 use super::tokio::{TokioRuntimeResource, TokioRuntimeState};
 
 pub struct StarknetPlugin;
@@ -66,7 +70,6 @@ fn handle_player_inputs(
 ) {
     let keys = input.get_just_pressed();
     let mut modify_inputs = false;
-    let mut position_bool = false;
     let mut value = "10";
 
     for key in keys {
@@ -104,12 +107,10 @@ fn handle_player_inputs(
                 value = "7";
             }
             KeyCode::KeyX => {
-                position_bool = false;
-                claim_resource.current_selection = position_bool;
+                claim_resource.current_selection = false;
             }
             KeyCode::KeyY => {
-                position_bool = true;
-                claim_resource.current_selection = position_bool;
+                claim_resource.current_selection = true;
             }
             KeyCode::KeyQ => {
                 let _ = channel.tx.try_send(StarknetCommands::SetAccountPlayerOne);
@@ -208,33 +209,27 @@ fn spawn_starknet_caller_thread(
 }
 
 async fn get_rpc_provider() -> JsonRpcClient<HttpTransport> {
-    let provider = JsonRpcClient::new(HttpTransport::new(
-        Url::parse("http://127.0.0.1:5050").unwrap(),
-    ));
+    let provider = JsonRpcClient::new(HttpTransport::new(Url::parse(RPC_URL).unwrap()));
 
     provider
 }
 
 fn get_player1_account() -> (LocalWallet, Felt) {
     let signer = LocalWallet::from(SigningKey::from_secret_scalar(
-        Felt::from_hex("0xc5b2fcab997346f3ea1c00b002ecf6f382c5f9c9659a3894eb783c5320f912").unwrap(),
+        Felt::from_hex(PLAYER_ONE_PRIVATE_KEY).unwrap(),
     ));
 
-    let address =
-        Felt::from_hex("0x127fd5f1fe78a71f8bcd1fec63e3fe2f0486b6ecd5c86a0466c3a21fa5cfcec")
-            .unwrap();
+    let address = Felt::from_hex(PLAYER_ONE_ADDRESS).unwrap();
 
     (signer, address)
 }
 
 fn get_player2_account() -> (LocalWallet, Felt) {
     let signer = LocalWallet::from(SigningKey::from_secret_scalar(
-        Felt::from_hex("0x33003003001800009900180300d206308b0070db00121318d17b5e6262150b").unwrap(),
+        Felt::from_hex(PLAYER_TWO_PRIVATE_KEY).unwrap(),
     ));
 
-    let address =
-        Felt::from_hex("0x5b6b8189bb580f0df1e6d6bec509ff0d6c9be7365d10627e0cf222ec1b47a71")
-            .unwrap();
+    let address = Felt::from_hex(PLAYER_TWO_ADDRESS).unwrap();
 
     (signer, address)
 }
@@ -266,10 +261,7 @@ async fn send_create_game_tx(
 > {
     let tx = account
         .execute_v3(vec![Call {
-            to: Felt::from_hex(
-                "0x0499f2e2515b64f360601510e4bf47b904ecddc50a40ce6e461e1dd4d7389398",
-            )
-            .unwrap(),
+            to: Felt::from_hex(GAME_ACTIONS_CONTRACT_ADDRESS).unwrap(),
             selector: get_selector_from_name("create_game").unwrap(),
             calldata: vec![],
         }])
@@ -289,10 +281,7 @@ async fn send_join_game_tx(
 > {
     let tx = account
         .execute_v3(vec![Call {
-            to: Felt::from_hex(
-                "0x0499f2e2515b64f360601510e4bf47b904ecddc50a40ce6e461e1dd4d7389398",
-            )
-            .unwrap(),
+            to: Felt::from_hex(GAME_ACTIONS_CONTRACT_ADDRESS).unwrap(),
             selector: get_selector_from_name("join_game").unwrap(),
             calldata: vec![Felt::from_hex_unchecked("0x1")],
         }])
@@ -319,10 +308,7 @@ async fn send_claim_tile_tx(
     ];
     let tx = account
         .execute_v3(vec![Call {
-            to: Felt::from_hex(
-                "0x0499f2e2515b64f360601510e4bf47b904ecddc50a40ce6e461e1dd4d7389398",
-            )
-            .unwrap(),
+            to: Felt::from_hex(GAME_ACTIONS_CONTRACT_ADDRESS).unwrap(),
             selector: get_selector_from_name("claim_tile").unwrap(),
             calldata,
         }])
