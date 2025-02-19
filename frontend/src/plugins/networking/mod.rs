@@ -1,4 +1,5 @@
 pub mod config;
+pub mod controller;
 pub mod starknet_call;
 pub mod tokio;
 pub mod torii;
