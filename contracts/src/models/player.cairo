@@ -1,7 +1,7 @@
 pub use grid_guru::models::index::Player;
 
 use origami_map::helpers::bitmap::Bitmap;
-use origami_map::map::{Map, MapTrait};
+use origami_map::map::{MapTrait};
 use starknet::ContractAddress;
 
 pub mod errors {
@@ -36,7 +36,7 @@ pub impl PlayerImpl of PlayerTrait {
         let current_pos = ((7 - self.x) + ((7 - self.y) * 8));
         let path_to_target = origami_map.search_path(current_pos, index);
         assert(path_to_target.len() > 0, errors::NO_PATH_TO_TARGET);
-        
+
         // set the tile in 1 and move player
         self.grid = tmp_grid;
         self.x = x;
@@ -64,7 +64,7 @@ pub impl PlayerImpl of PlayerTrait {
     fn remaining_moves(ref self: Player, opponent_grid: felt252) -> Span<u8> {
         let mut idx = 0;
         let mut result = array![];
-        loop{
+        loop {
             if idx == 64 {
                 break;
             }
