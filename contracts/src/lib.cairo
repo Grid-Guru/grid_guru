@@ -12,27 +12,27 @@ pub mod components {
     pub mod playable;
 }
 
-pub mod elements {
-    pub mod tasks {
-        pub mod movement;
-        pub mod territory;
-        pub mod interface;
-    }
-    pub mod trophies {
-        pub mod navigator;
-        pub mod tactician;
-        pub mod interface;
-    }
-}
+//pub mod elements {
+//    pub mod tasks {
+//        pub mod movement;
+//        pub mod territory;
+//        pub mod interface;
+//    }
+//    pub mod trophies {
+//        pub mod navigator;
+//        pub mod tactician;
+//        pub mod interface;
+//    }
+//}
 
 pub mod systems {
     pub mod actions;
 }
 
-pub mod types {
-    pub mod task;
-    pub mod trophy;
-}
+//pub mod types {
+//    pub mod task;
+//    pub mod trophy;
+//}
 
 pub mod helpers {}
 

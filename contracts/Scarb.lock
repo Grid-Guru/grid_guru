@@ -2,17 +2,9 @@
 version = 1
 
 [[package]]
-name = "achievement"
-version = "0.0.0"
-source = "git+https://github.com/cartridge-gg/arcade?tag=v1.1.2#f73c8a231f4d572502c28955decdf99b4713b696"
-dependencies = [
- "dojo",
-]
-
-[[package]]
 name = "dojo"
-version = "1.1.2"
-source = "git+https://github.com/dojoengine/dojo?tag=v1.1.2#4f3373ed4f98e1778022ed6f6502ce89f9d29b58"
+version = "1.2.2"
+source = "git+https://github.com/dojoengine/dojo?tag=v1.2.2#aafa6669b750cec99aed145640dd6c9a9a946562"
 dependencies = [
  "dojo_plugin",
 ]
@@ -20,7 +12,7 @@ dependencies = [
 [[package]]
 name = "dojo_cairo_test"
 version = "1.0.12"
-source = "git+https://github.com/dojoengine/dojo?tag=v1.1.2#4f3373ed4f98e1778022ed6f6502ce89f9d29b58"
+source = "git+https://github.com/dojoengine/dojo?tag=v1.2.2#aafa6669b750cec99aed145640dd6c9a9a946562"
 dependencies = [
  "dojo",
 ]
@@ -28,13 +20,18 @@ dependencies = [
 [[package]]
 name = "dojo_plugin"
 version = "2.9.2"
-source = "git+https://github.com/dojoengine/dojo?tag=v1.1.2#4f3373ed4f98e1778022ed6f6502ce89f9d29b58"
+source = "git+https://github.com/dojoengine/dojo?tag=v1.2.2#aafa6669b750cec99aed145640dd6c9a9a946562"
 
 [[package]]
 name = "grid_guru"
 version = "0.0.1"
 dependencies = [
- "achievement",
  "dojo",
  "dojo_cairo_test",
+ "origami_map",
 ]
+
+[[package]]
+name = "origami_map"
+version = "1.1.2"
+source = "git+https://github.com/dojoengine/origami?tag=v1.1.2#fb5dc623e911093a8afeca576db88fc00d35e63a"
