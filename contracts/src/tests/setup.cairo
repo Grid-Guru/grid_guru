@@ -39,10 +39,10 @@ pub mod setup {
                 TestResource::Model(models::m_Game::TEST_CLASS_HASH),
                 TestResource::Model(models::m_Tile::TEST_CLASS_HASH),
                 TestResource::Contract(actions::TEST_CLASS_HASH),
-                TestResource::Event(achievement::events::index::e_TrophyCreation::TEST_CLASS_HASH),
-                TestResource::Event(
-                    achievement::events::index::e_TrophyProgression::TEST_CLASS_HASH,
-                ),
+                //TestResource::Event(achievement::events::index::e_TrophyCreation::TEST_CLASS_HASH),
+            //TestResource::Event(
+            //    achievement::events::index::e_TrophyProgression::TEST_CLASS_HASH,
+            //),
             ]
                 .span(),
         }
