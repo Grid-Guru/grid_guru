@@ -4,6 +4,9 @@ use bevy::prelude::*;
 use super::constants::{XMUL, YMUL};
 use super::tile::Tile;
 
+// Import the ClaimTilePosition resource from the networking module
+use crate::plugins::networking::starknet_call::ClaimTilePosition;
+
 pub struct HighlightPlugin;
 impl Plugin for HighlightPlugin {
     fn build(&self, app: &mut App) {
@@ -11,7 +14,8 @@ impl Plugin for HighlightPlugin {
             .register_type::<HighlightState>()
             .init_resource::<HighlightState>()
             .add_systems(Update, toggle_highlight_system)
-            .add_systems(Update, hover_highlight_system);
+            .add_systems(Update, hover_highlight_system)
+            .add_systems(Update, update_claim_tile_position);
     }
 }
 
@@ -25,8 +29,54 @@ pub struct Highlightable {
 // Resource to track highlight state
 #[derive(Resource, Debug, Default, Reflect)]
 pub struct HighlightState {
-    pub highlighted_entities: Vec<Entity>,
+    pub highlighted_entity: Option<Entity>,
     pub hovered_entity: Option<Entity>,
+}
+
+// System to update the ClaimTilePosition resource based on the highlighted tile
+fn update_claim_tile_position(
+    highlight_state: Res<HighlightState>,
+    highlightables: Query<&Tile>,
+    mut claim_tile_position: ResMut<ClaimTilePosition>,
+) {
+    // Only update if we have a highlighted entity
+    if let Some(highlighted_entity) = highlight_state.highlighted_entity {
+        // Get the tile component to access grid coordinates
+        if let Ok(tile) = highlightables.get(highlighted_entity) {
+            // Convert grid coordinates to static strings that can be used by the Starknet call
+            // We need to convert the i32 grid coordinates to static strings
+            let x_str = match tile.grid_x {
+                0 => "0",
+                1 => "1",
+                2 => "2",
+                3 => "3",
+                4 => "4",
+                5 => "5",
+                6 => "6",
+                7 => "7",
+                _ => "0", // Default to 0 for any other value
+            };
+
+            let y_str = match tile.grid_y {
+                0 => "0",
+                1 => "1",
+                2 => "2",
+                3 => "3",
+                4 => "4",
+                5 => "5",
+                6 => "6",
+                7 => "7",
+                _ => "0", // Default to 0 for any other value
+            };
+
+            // Update the ClaimTilePosition resource
+            claim_tile_position.x = x_str;
+            claim_tile_position.y = y_str;
+
+            // Log the update for debugging
+            info!("Updated claim tile position to ({}, {})", x_str, y_str);
+        }
+    }
 }
 
 // System to handle hover highlights via raycasting
@@ -224,78 +274,80 @@ fn toggle_highlight_system(
         }
     }
 
-    // If we found an entity, toggle its highlight
+    // First, unhighlight any currently highlighted entity
+    if let Some(current_highlighted) = highlight_state.highlighted_entity {
+        // Set the highlight state to false
+        if let Ok((_, _, mut highlightable, _)) = highlightables.get_mut(current_highlighted) {
+            highlightable.is_highlighted = false;
+        }
+
+        // Remove the highlight entity
+        for (highlight_entity, marker) in highlight_query.iter() {
+            if marker.parent_entity == current_highlighted && !marker.is_hover_highlight {
+                commands.entity(highlight_entity).despawn_recursive();
+            }
+        }
+
+        // Clear the highlighted entity in the state
+        highlight_state.highlighted_entity = None;
+    }
+
+    // If we found an entity, handle its highlight
     if let Some((entity, grid_x, grid_y)) = closest_entity {
         // Get mutable reference to the Highlightable component
         if let Ok((_, _, mut highlightable, _)) = highlightables.get_mut(entity) {
-            // Toggle the highlight state
-            highlightable.is_highlighted = !highlightable.is_highlighted;
-
-            // Find and remove any existing highlight for this entity
-            for (highlight_entity, marker) in highlight_query.iter() {
-                if marker.parent_entity == entity && !marker.is_hover_highlight {
-                    commands.entity(highlight_entity).despawn_recursive();
-
-                    // Remove from highlighted entities list if it exists
-                    if let Some(index) = highlight_state
-                        .highlighted_entities
-                        .iter()
-                        .position(|&e| e == entity)
-                    {
-                        highlight_state.highlighted_entities.swap_remove(index);
-                    }
-                }
-            }
-
-            // If now highlighted, create a new highlight
+            // If clicking on the already highlighted tile, just unhighlight it (already done above)
             if highlightable.is_highlighted {
-                // Add to highlighted entities list
-                highlight_state.highlighted_entities.push(entity);
-
-                // Create a highlight effect
-                let highlight_mesh = meshes.add(Cuboid::new(XMUL * 0.5, YMUL * 0.5, 0.05));
-                let highlight_material = materials.add(StandardMaterial {
-                    // Change color to white with some transparency
-                    base_color: Color::rgba(1.0, 1.0, 1.0, 0.7),
-                    // White glow effect
-                    emissive: LinearRgba::new(1.0, 1.0, 1.0, 1.0),
-                    alpha_mode: AlphaMode::Blend,
-                    ..default()
-                });
-
-                // Get the exact position of the tile to ensure the highlight is positioned correctly
-                if let Ok((_, transform, _, _)) = highlightables.get(entity) {
-                    let tile_position = transform.translation();
-
-                    // Spawn the highlight as a separate entity
-                    commands.spawn((
-                        // Individual components for 3D rendering
-                        Mesh3d(highlight_mesh),
-                        MeshMaterial3d(highlight_material),
-                        // Use the exact tile position but with higher Z
-                        Transform::from_xyz(
-                            tile_position.x,
-                            tile_position.y + 0.45,
-                            tile_position.z + 0.5,
-                        ),
-                        GlobalTransform::default(),
-                        Visibility::default(),
-                        InheritedVisibility::default(),
-                        ViewVisibility::default(),
-                        HighlightMarker {
-                            parent_entity: entity,
-                            is_hover_highlight: false,
-                        },
-                        Name::new(format!("Highlight for Tile ({}, {})", grid_x, grid_y)),
-                    ));
-
-                    info!("Highlighted tile at grid position ({}, {})", grid_x, grid_y);
-                }
-            } else {
+                // Just log the unhighlight
                 info!(
                     "Unhighlighted tile at grid position ({}, {})",
                     grid_x, grid_y
                 );
+                return;
+            }
+
+            // Otherwise, highlight the new tile
+            highlightable.is_highlighted = true;
+            highlight_state.highlighted_entity = Some(entity);
+
+            // Create a highlight effect
+            let highlight_mesh = meshes.add(Cuboid::new(XMUL * 0.5, YMUL * 0.5, 0.05));
+            let highlight_material = materials.add(StandardMaterial {
+                // Change color to white with some transparency
+                base_color: Color::rgba(1.0, 1.0, 1.0, 0.7),
+                // White glow effect
+                emissive: LinearRgba::new(1.0, 1.0, 1.0, 1.0),
+                alpha_mode: AlphaMode::Blend,
+                ..default()
+            });
+
+            // Get the exact position of the tile to ensure the highlight is positioned correctly
+            if let Ok((_, transform, _, _)) = highlightables.get(entity) {
+                let tile_position = transform.translation();
+
+                // Spawn the highlight as a separate entity
+                commands.spawn((
+                    // Individual components for 3D rendering
+                    Mesh3d(highlight_mesh),
+                    MeshMaterial3d(highlight_material),
+                    // Use the exact tile position but with higher Z
+                    Transform::from_xyz(
+                        tile_position.x,
+                        tile_position.y + 0.45,
+                        tile_position.z + 0.5,
+                    ),
+                    GlobalTransform::default(),
+                    Visibility::default(),
+                    InheritedVisibility::default(),
+                    ViewVisibility::default(),
+                    HighlightMarker {
+                        parent_entity: entity,
+                        is_hover_highlight: false,
+                    },
+                    Name::new(format!("Highlight for Tile ({}, {})", grid_x, grid_y)),
+                ));
+
+                info!("Highlighted tile at grid position ({}, {})", grid_x, grid_y);
             }
         }
     }

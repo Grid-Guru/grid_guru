@@ -50,10 +50,10 @@ pub enum StarknetCommands {
 }
 
 #[derive(Resource)]
-struct ClaimTilePosition {
-    x: &'static str,
-    y: &'static str,
-    current_selection: bool,
+pub struct ClaimTilePosition {
+    pub x: &'static str,
+    pub y: &'static str,
+    pub current_selection: bool,
 }
 
 #[derive(States, Default, Debug, Clone, PartialEq, Eq, Hash)]
