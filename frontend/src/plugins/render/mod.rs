@@ -1,6 +1,7 @@
 mod assets;
 mod camera;
 mod constants;
+mod highlight;
 mod mouse;
 mod player;
 mod tile;
@@ -8,6 +9,7 @@ mod tile;
 use assets::RAssetsPlugin;
 use bevy::prelude::*;
 use camera::RCameraPlugin;
+use highlight::HighlightPlugin;
 use mouse::RMousePlugin;
 use player::RPlayerPlugin;
 use tile::RTilePlugin;
@@ -20,5 +22,6 @@ impl Plugin for GridGuruRenderPlugin {
         app.add_plugins(RTilePlugin);
         app.add_plugins(RPlayerPlugin);
         app.add_plugins(RMousePlugin);
+        app.add_plugins(HighlightPlugin);
     }
 }

@@ -1,16 +1,25 @@
 use bevy::prelude::*;
 
 use super::assets::AllAssetHandles;
+use super::constants::{XMUL, YMUL};
+use super::highlight::make_tiles_highlightable;
 
 pub struct RTilePlugin;
 impl Plugin for RTilePlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(PostStartup, spawn_tiles);
+        app.add_systems(PostStartup, spawn_tiles)
+            .register_type::<Tile>()
+            // Add system to make tiles highlightable after they're spawned
+            .add_systems(PostStartup, make_tiles_highlightable.after(spawn_tiles));
     }
 }
 
-pub const YMUL: f32 = 1.2;
-pub const XMUL: f32 = 1.2;
+// Component to mark an entity as a tile and track its grid position
+#[derive(Component, Debug, Reflect)]
+pub struct Tile {
+    pub grid_x: u32,
+    pub grid_y: u32,
+}
 
 fn spawn_tiles(mut commands: Commands, asset_handler: Res<AllAssetHandles>) {
     let grid_array = (8, 8);
@@ -18,7 +27,17 @@ fn spawn_tiles(mut commands: Commands, asset_handler: Res<AllAssetHandles>) {
         for j in 0..grid_array.1 {
             let dirt_block = SceneRoot(asset_handler.dirt.clone());
             let transform = Transform::from_xyz(i as f32 * XMUL, j as f32 * YMUL, 0.0);
-            commands.spawn((dirt_block, transform));
+
+            // Spawn tile with Tile component to track its grid position
+            commands.spawn((
+                dirt_block,
+                transform,
+                Tile {
+                    grid_x: i,
+                    grid_y: j,
+                },
+                Name::new(format!("Tile ({}, {})", i, j)),
+            ));
         }
     }
 }
