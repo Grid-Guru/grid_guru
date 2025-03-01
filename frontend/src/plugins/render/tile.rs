@@ -3,14 +3,18 @@ use bevy::prelude::*;
 use super::assets::AllAssetHandles;
 use super::constants::{XMUL, YMUL};
 use super::highlight::make_tiles_highlightable;
+use crate::GameState;
 
 pub struct RTilePlugin;
 impl Plugin for RTilePlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(PostStartup, spawn_tiles)
+        app.add_systems(OnEnter(GameState::Playing), spawn_tiles)
             .register_type::<Tile>()
             // Add system to make tiles highlightable after they're spawned
-            .add_systems(PostStartup, make_tiles_highlightable.after(spawn_tiles));
+            .add_systems(
+                OnEnter(GameState::Playing),
+                make_tiles_highlightable.after(spawn_tiles),
+            );
     }
 }
 

@@ -5,9 +5,16 @@ edition = "2021"
 
 [dependencies]
 account_sdk = { git = "https://github.com/cartridge-gg/controller", package = "account_sdk" }
-bevy = { version = "0.15.1", features = ["dynamic_linking"] }
+bevy = { version = "0.15.1", features = [
+  "bevy_asset",
+  "dynamic_linking",
+  "png",
+  ] }
+bevy_asset_loader = { version = "0.22" }
+bevy_kira_audio = { version = "0.22.0", features = ["android_shared_stdcxx"] }
 bevy-inspector-egui = "0.29.1"
 starknet = "0.13.0"
+webbrowser = { version = "1", features = ["hardened"] }
 tokio = { version = "1.43.0", features = ["full"] }
 dojo-types = { version = "1.2.2", git = "https://github.com/dojoengine/dojo.git" }
 torii-client = { version = "1.2.2", git = "https://github.com/dojoengine/dojo.git" }
