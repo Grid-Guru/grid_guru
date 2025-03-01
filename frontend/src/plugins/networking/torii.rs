@@ -88,7 +88,6 @@ fn spawn_tokio_runtime_thread(rt: Res<TokioRuntimeResource>, channel: Res<ToriiC
     let _ = rt.0.spawn(async move {
         let new_client = ToriiClient::new(
             TORII_URL.to_string(),
-            RPC_URL.to_string(),
             TORII_RELAY_URL.to_string(),
             Felt::from_hex_unchecked(GAME_WORLD_ADDRESS),
         );
