@@ -38,7 +38,7 @@ impl MouseZoom {
 fn handle_zoom_reset(
     keyboard_input: Res<ButtonInput<KeyCode>>,
     mut mouse_zoom: ResMut<MouseZoom>,
-    mut query: Query<&mut OrthographicProjection>,
+    mut query: Query<&mut Projection>,
 ) {
     if keyboard_input.just_pressed(KeyCode::KeyZ) {
         // Reset zoom level to default
@@ -46,8 +46,14 @@ fn handle_zoom_reset(
 
         // Apply reset zoom to all orthographic cameras
         for mut projection in query.iter_mut() {
-            projection.scale = 0.006; // Default scale
-            info!("Zoom reset to default. Camera scale: {}", projection.scale);
+            if let Projection::Orthographic(ref mut ortho) = *projection {
+                // Use the isometric default scale
+                ortho.scale = 0.01;
+                info!(
+                    "Zoom reset to default isometric view. Camera scale: {}",
+                    ortho.scale
+                );
+            }
         }
     }
 }
@@ -55,7 +61,7 @@ fn handle_zoom_reset(
 fn handle_mouse_wheel(
     mut mouse_wheel_events: EventReader<MouseWheel>,
     mut mouse_zoom: ResMut<MouseZoom>,
-    mut query: Query<&mut OrthographicProjection>,
+    mut query: Query<&mut Projection>,
 ) {
     for event in mouse_wheel_events.read() {
         // Use a very small fixed delta to make zooming more controlled
@@ -67,16 +73,18 @@ fn handle_mouse_wheel(
         // Ensure zoom level stays within safe bounds
         mouse_zoom.zoom_level = mouse_zoom.zoom_level.clamp(0.5, 2.0);
 
-        // Apply zoom directly to the orthographic projection
+        // Apply zoom to all orthographic projections
         for mut projection in query.iter_mut() {
-            // Set the scale directly based on zoom level
-            projection.scale = 0.006 * (1.0 / mouse_zoom.zoom_level);
+            if let Projection::Orthographic(ref mut ortho) = *projection {
+                // Set the scale based on zoom level, using the isometric base scale
+                ortho.scale = 0.01 * (1.0 / mouse_zoom.zoom_level);
 
-            // Log the current zoom level and scale
-            info!(
-                "Zoom level: {}, Camera scale: {}",
-                mouse_zoom.zoom_level, projection.scale
-            );
+                // Log the current zoom level and scale
+                info!(
+                    "Zoom level: {}, Isometric camera scale: {}",
+                    mouse_zoom.zoom_level, ortho.scale
+                );
+            }
         }
     }
 }
