@@ -1,4 +1,4 @@
-pub const RPC_URL: &str = "http://127.0.0.1:5050";
+pub const RPC_URL: &str = "https://api.cartridge.gg/x/denver-grid/katana";
 pub const TORII_URL: &str = "http://localhost:8080";
 pub const TORII_RELAY_URL: &str = "/ip4/127.0.0.1/tcp/9090";
 

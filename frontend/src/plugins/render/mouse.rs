@@ -65,7 +65,7 @@ fn handle_mouse_wheel(
 ) {
     for event in mouse_wheel_events.read() {
         // Use a very small fixed delta to make zooming more controlled
-        let zoom_delta = event.y.signum() * 0.01;
+        let zoom_delta = event.y.signum() * 0.1;
 
         // Update zoom level with the fixed small delta
         mouse_zoom.zoom_level -= zoom_delta;
