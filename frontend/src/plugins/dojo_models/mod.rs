@@ -130,28 +130,28 @@ impl From<DojoStruct> for Game {
             .ty
             .as_primitive()
             .unwrap()
-            .as_contract_address()
+            .as_class_hash()
             .unwrap()
             .into();
         let player_two = value.children[2]
             .ty
             .as_primitive()
             .unwrap()
-            .as_contract_address()
+            .as_class_hash()
             .unwrap()
             .into();
         let current_player = value.children[3]
             .ty
             .as_primitive()
             .unwrap()
-            .as_contract_address()
+            .as_class_hash()
             .unwrap()
             .into();
         let winner = value.children[4]
             .ty
             .as_primitive()
             .unwrap()
-            .as_contract_address()
+            .as_class_hash()
             .unwrap()
             .into();
         let move_count = value.children[5]
@@ -202,6 +202,9 @@ pub struct Player {
     pub game_id: u128,
     pub address: BevyFelt,
     pub score: u8,
+    pub grid: BevyFelt,
+    pub x: u8,
+    pub y: u8,
 }
 impl From<DojoStruct> for Player {
     fn from(value: DojoStruct) -> Self {
@@ -215,10 +218,29 @@ impl From<DojoStruct> for Player {
             .ty
             .as_primitive()
             .unwrap()
-            .as_contract_address()
+            .as_class_hash()
             .unwrap()
             .into();
         let score = value.children[2]
+            .ty
+            .as_primitive()
+            .unwrap()
+            .as_u8()
+            .unwrap();
+        let grid = value.children[3]
+            .ty
+            .as_primitive()
+            .unwrap()
+            .as_felt252()
+            .unwrap()
+            .into();
+        let x = value.children[4]
+            .ty
+            .as_primitive()
+            .unwrap()
+            .as_u8()
+            .unwrap();
+        let y = value.children[5]
             .ty
             .as_primitive()
             .unwrap()
@@ -229,6 +251,9 @@ impl From<DojoStruct> for Player {
             game_id,
             address,
             score,
+            grid,
+            x,
+            y,
         }
     }
 }
@@ -264,7 +289,7 @@ impl From<DojoStruct> for Tile {
             .ty
             .as_primitive()
             .unwrap()
-            .as_contract_address()
+            .as_class_hash()
             .unwrap()
             .into();
 
