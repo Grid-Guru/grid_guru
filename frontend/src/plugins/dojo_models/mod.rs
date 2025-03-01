@@ -130,28 +130,28 @@ impl From<DojoStruct> for Game {
             .ty
             .as_primitive()
             .unwrap()
-            .as_contract_address()
+            .as_class_hash()
             .unwrap()
             .into();
         let player_two = value.children[2]
             .ty
             .as_primitive()
             .unwrap()
-            .as_contract_address()
+            .as_class_hash()
             .unwrap()
             .into();
         let current_player = value.children[3]
             .ty
             .as_primitive()
             .unwrap()
-            .as_contract_address()
+            .as_class_hash()
             .unwrap()
             .into();
         let winner = value.children[4]
             .ty
             .as_primitive()
             .unwrap()
-            .as_contract_address()
+            .as_class_hash()
             .unwrap()
             .into();
         let move_count = value.children[5]
@@ -215,7 +215,7 @@ impl From<DojoStruct> for Player {
             .ty
             .as_primitive()
             .unwrap()
-            .as_contract_address()
+            .as_class_hash()
             .unwrap()
             .into();
         let score = value.children[2]
@@ -264,7 +264,7 @@ impl From<DojoStruct> for Tile {
             .ty
             .as_primitive()
             .unwrap()
-            .as_contract_address()
+            .as_class_hash()
             .unwrap()
             .into();
 

@@ -20,7 +20,8 @@ rpc_url = "http://localhost:5050/"
 # Default account for katana with seed = 0
 account_address = "0x127fd5f1fe78a71f8bcd1fec63e3fe2f0486b6ecd5c86a0466c3a21fa5cfcec"
 private_key = "0xc5b2fcab997346f3ea1c00b002ecf6f382c5f9c9659a3894eb783c5320f912"
-world_address = "0x057a3f7a51ea6dd81fc1362300aaf3cfbcd84fedf1016a5f43a0694cffea39c6"
+# world_address = "0x057a3f7a51ea6dd81fc1362300aaf3cfbcd84fedf1016a5f43a0694cffea39c6"
+world_address = "0x000fb6b38cdca072996cdcf55d7f785f78bd930df1e8a5dfd4867987f254b8e7"
 
 [writers]
 "grid_guru" = ["grid_guru-actions"]

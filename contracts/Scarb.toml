@@ -13,12 +13,12 @@ build-external-contracts = ["dojo::world::world_contract::world"]
 sierra-replace-ids = true
 
 [dependencies]
-dojo = { git = "https://github.com/dojoengine/dojo", tag = "v1.1.2" }
+dojo = { git = "https://github.com/dojoengine/dojo", tag = "v1.2.1" }
 starknet = "2.9.2"
 
 [dev-dependencies]
 cairo_test = "2.9.2"
-dojo_cairo_test = { git = "https://github.com/dojoengine/dojo", tag = "v1.1.2" }
+dojo_cairo_test = { git = "https://github.com/dojoengine/dojo", tag = "v1.2.1" }
 
 [tool.fmt]
 sort-module-level-items = true
