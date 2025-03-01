@@ -6,7 +6,7 @@ impl Plugin for RCameraPlugin {
     fn build(&self, app: &mut App) {
         app.insert_resource(ClearColor(Color::srgb_u8(30, 30, 30)));
         // Using simple values for zoom
-        app.insert_resource(MouseZoom::new(0.5, 2.0, 0.01));
+        app.insert_resource(MouseZoom::new(0.5, 2.0, 0.1));
         app.add_systems(Startup, setup_camera);
     }
 }
